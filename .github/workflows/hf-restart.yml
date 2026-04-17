@@ -2,7 +2,7 @@ name: Hugging Face Space Factory Rebuild
 
 on:
   schedule:
-  # Esegue la ricompilazione ogni giorno alle 02:00 UTC
+  # Esegue la ricompilazione ogni giorno alle 00:00 UTC
     - cron: '0 2 * * *'
   workflow_dispatch: # Permette l'avvio manuale
 
@@ -10,37 +10,31 @@ jobs:
   rebuild-space:
     runs-on: ubuntu-latest
     steps:
-      - name: Installa Python e HuggingFace Hub
+      - name: Installa HuggingFace Hub
         run: |
           pip install huggingface_hub
 
-      - name: Ricompila (Factory Reboot) lo Spazio Hugging Face
+      - name: Ricompila (Factory Reboot) lo Spazio
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        shell: python 
         run: |
-          python -c "
           from huggingface_hub import HfApi
           import os
+          import sys
           
           # Parametri dello spazio
           repo_id = 'Marco224/SelfStream'
-          token = os.getenv('HF_TOKEN')
+          token = os.environ.get('HF_TOKEN')
           
           if not token:
               print('ERRORE: Token HF_TOKEN non trovato nei Secret di GitHub!')
-              exit(1)
+              sys.exit(1)
               
           api = HfApi(token=token)
           try:
-              # Corretto: factory_reboot=True
               api.restart_space(repo_id=repo_id, factory_reboot=True)
               print(f'Successo: Segnale di Factory Reboot inviato a {repo_id}')
           except Exception as e:
               print(f'Errore durante la ricompilazione: {e}')
-              exit(1)
-          "
-              print(f'Successo: Segnale di Factory Rebuild inviato a {repo_id}')
-          except Exception as e:
-              print(f'Errore durante la ricompilazione: {e}')
-              exit(1)
-          "
+              sys.exit(1)
