@@ -1,21 +1,20 @@
-name: Keep Hugging Face Space Alive
+name: Hugging Face Space Factory Rebuild
 
 on:
   schedule:
-    # Esegue il riavvio ogni giorno alle 00:00 UTC (circa le 02:00 in Italia)
-    # Puoi cambiare l'orario modificando i numeri del cron
-    - cron: '0 0 * * *'
-  workflow_dispatch: # Permette di avviare il riavvio manualmente da GitHub
+    # Esegue la ricompilazione ogni giorno alle 02:00 UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Permette l'avvio manuale
 
 jobs:
-  restart-space:
+  rebuild-space:
     runs-on: ubuntu-latest
     steps:
       - name: Installa Python e HuggingFace Hub
         run: |
           pip install huggingface_hub
 
-      - name: Riavvia lo Spazio Hugging Face
+      - name: Ricompila (Factory Rebuild) lo Spazio Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
@@ -33,9 +32,10 @@ jobs:
               
           api = HfApi(token=token)
           try:
-              api.restart_space(repo_id=repo_id)
-              print(f'Successo: Segnale di riavvio inviato a {repo_id}')
+              # Ecco la modifica: factory_rebuild=True
+              api.restart_space(repo_id=repo_id, factory_rebuild=True)
+              print(f'Successo: Segnale di Factory Rebuild inviato a {repo_id}')
           except Exception as e:
-              print(f'Errore durante il riavvio: {e}')
+              print(f'Errore durante la ricompilazione: {e}')
               exit(1)
           "
