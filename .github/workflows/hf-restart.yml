@@ -2,7 +2,7 @@ name: Hugging Face Space Factory Rebuild
 
 on:
   schedule:
-  # Esegue la ricompilazione ogni giorno alle 00:00 UTC
+  # Esegue la ricompilazione ogni giorno alle 02:00 UTC
     - cron: '0 2 * * *'
   workflow_dispatch: # Permette l'avvio manuale
 
