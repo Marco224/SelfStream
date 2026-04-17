@@ -2,7 +2,7 @@ name: Hugging Face Space Factory Rebuild
 
 on:
   schedule:
-    # Esegue la ricompilazione ogni giorno alle 02:00 UTC
+  # Esegue la ricompilazione ogni giorno alle 02:00 UTC
     - cron: '0 2 * * *'
   workflow_dispatch: # Permette l'avvio manuale
 
@@ -14,7 +14,7 @@ jobs:
         run: |
           pip install huggingface_hub
 
-      - name: Ricompila (Factory Rebuild) lo Spazio Hugging Face
+      - name: Ricompila (Factory Reboot) lo Spazio Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
@@ -32,8 +32,13 @@ jobs:
               
           api = HfApi(token=token)
           try:
-              # Ecco la modifica: factory_rebuild=True
-              api.restart_space(repo_id=repo_id, factory_rebuild=True)
+              # Corretto: factory_reboot=True
+              api.restart_space(repo_id=repo_id, factory_reboot=True)
+              print(f'Successo: Segnale di Factory Reboot inviato a {repo_id}')
+          except Exception as e:
+              print(f'Errore durante la ricompilazione: {e}')
+              exit(1)
+          "
               print(f'Successo: Segnale di Factory Rebuild inviato a {repo_id}')
           except Exception as e:
               print(f'Errore durante la ricompilazione: {e}')
